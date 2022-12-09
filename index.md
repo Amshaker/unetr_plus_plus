@@ -4,7 +4,7 @@
 
 <br>
 
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  [Paper](https://arxiv.org/abs/2206.10589): [<img height="25" src="/unetr_plus_plus/Paper.PNG" width="25" />](https://arxiv.org/abs/2206.10589)  , [Code:](https://github.com/Amshaker/unetr_plus_plus) [<img height="25" src="/unetr_plus_plus/Github.png" width="25" />](https://github.com/Amshaker/unetr_plus_plus)
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  [Paper](https://arxiv.org/abs/2212.04497): [<img height="25" src="/unetr_plus_plus/Paper.PNG" width="25" />](https://arxiv.org/abs/2212.04497)  , [Code:](https://github.com/Amshaker/unetr_plus_plus) [<img height="25" src="/unetr_plus_plus/Github.png" width="25" />](https://github.com/Amshaker/unetr_plus_plus)
 
 <br>
 
@@ -56,10 +56,15 @@ Our spatial attention formulation is efficient having linear complexity with res
 
 ![results](images/acdc_vs_unetr_suppl.jpg)
 
+
 ## Citation
 ```
-
-
+    @article{Shaker2022UNETR++,
+      title={UNETR++: Delving into Efficient and Accurate 3D Medical Image Segmentation},
+      author={Shaker, Abdelrahman and Maaz, Muhammad and Rasheed, Hanoona and Khan, Salman and Yang, Ming-Hsuan and Khan, Fahad Shahbaz},
+      journal={arXiv:2212.04497},
+      year={2022},
+}
 ```
 
 ## Contact
