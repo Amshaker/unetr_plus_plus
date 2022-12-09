@@ -2,10 +2,9 @@
 
 [Abdelrahman Shaker](https://scholar.google.com/citations?hl=en&user=eEz4Wu4AAAAJ), [Muhammad Maaz](https://scholar.google.com/citations?user=vTy9Te8AAAAJ&hl=en&authuser=1&oi=sra), [Hanoona Rasheed](https://scholar.google.com/citations?user=yhDdEuEAAAAJ&hl=en&authuser=1&oi=sra), [Salman Khan](https://salman-h-khan.github.io/), [Ming-Hsuan Yang](https://scholar.google.com/citations?user=p9-ohHsAAAAJ&hl=en) and [Fahad Shahbaz Khan](https://scholar.google.es/citations?user=zvaeYnUAAAAJ&hl=en)
 
-[![Website](https://img.shields.io/badge/Project-Website-87CEEB)](WRITE THE ADDRESS HERE)
-[![paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](WRITE THE ADDRESS HERE)
-[![video](https://img.shields.io/badge/Video-Presentation-F9D371)](WRITE THE ADDRESS HERE)
-[![slides](https://img.shields.io/badge/Presentation-Slides-B762C1)](WRITE THE ADDRESS HERE)
+[![Website](https://img.shields.io/badge/Project-Website-87CEEB)](https://amshaker.github.io/unetr_plus_plus/)
+[![paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2212.04497)
+[![slides](https://img.shields.io/badge/Presentation-Slides-B762C1)](https://docs.google.com/presentation/d/1NzBplLi9MzKJzS1YBc-bX4z-VRyZS1_p/edit?usp=sharing&ouid=117495521772794913474&rtpof=true&sd=true)
 
 
 ## :rocket: News
@@ -106,7 +105,7 @@ If you use our work, please consider citing:
     @article{Shaker2022UNETR++,
       title={UNETR++: Delving into Efficient and Accurate 3D Medical Image Segmentation},
       author={Shaker, Abdelrahman and Maaz, Muhammad and Rasheed, Hanoona and Khan, Salman and Yang, Ming-Hsuan and Khan, Fahad Shahbaz},
-      journal={arXiv:ID},
+      journal={arXiv:2212.04497},
       year={2022},
 }
 ```
