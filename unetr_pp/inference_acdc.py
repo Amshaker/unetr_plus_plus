@@ -53,13 +53,13 @@ def hd(pred,gt):
         return 0
 
 def test(fold):
-    # path='./'
-    # label_list=sorted(glob.glob(os.path.join(path,'labelsTs','*nii.gz')))
-    # infer_list=sorted(glob.glob(os.path.join(path,'inferTs',fold,'*nii.gz')))
-    label_path = "/home/hanoona/Documents/Efficent_model_project/visualization/infer/validation_split/acdc_val_gt"
-    pred_path = "/home/hanoona/Documents/Efficent_model_project/visualization/infer/a23/ensemble"
+    
+    label_path = './'
+    pred_path = '/'
+    
     label_list = sorted(glob.glob(os.path.join(label_path, '*nii.gz')))
     infer_list = sorted(glob.glob(os.path.join(pred_path, '*nii.gz')))
+    
     print("loading success...")
     print(label_list)
     print(infer_list)
@@ -71,8 +71,7 @@ def test(fold):
     hd_myo=[]
     hd_lv=[]
     
-    # file=path + 'inferTs/'+fold
-    file = "/home/hanoona/Documents/Efficent_model_project/visualization/infer/a23/ensemble"
+    file=path + 'inferTs/'+fold
     if not os.path.exists(file):
         os.makedirs(file)
     fw = open(file+'/dice_pre.txt', 'w')

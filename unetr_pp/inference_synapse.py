@@ -33,7 +33,7 @@ def process_label(label):
     return spleen,right_kidney,left_kidney,gallbladder,liver,stomach,aorta,pancreas
 
 def test(fold):
-    path='/nfs/users/ext_muhammad.haris/edgenext_medical_imaging/nnFormer/DATASET/nnFormer_raw/nnFormer_raw_data/Task002_Synapse'
+    path=None #Task002_Synapse path
     label_list=sorted(glob.glob(os.path.join(path,'labelsTs','*nii.gz')))
     infer_list=sorted(glob.glob(os.path.join(path,'inferTs','nnformer_synapse','*nii.gz')))
     print("loading success...")
