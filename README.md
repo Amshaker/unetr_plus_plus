@@ -8,6 +8,7 @@
 
 
 ## :rocket: News
+* **(Dec 15, 2022):** UNETR++ weights are released for Synapse & ACDC datasets.
 * **(Dec 09, 2022):** UNETR++ training and evaluation codes are released.
 
 <hr />
@@ -51,6 +52,10 @@ The different abdominal organs are shown in the legend below the examples. Exist
 Our UNETR++ achieves promising segmentation performance by accurately segmenting the organs.
 ![Synapse Qual Results](media/UNETR++_results_fig_synapse.jpg)
 
+### ACDC Dataset
+Qualitative comparison on the ACDC dataset. We compare our UNETR++ with existing methods: UNETR and nnFormer. It is noticeable that the existing methods struggle to correctly segment different organs (marked in red dashed box). Our UNETR++ achieves favorable segmentation performance by accurately segmenting the organs.  Our UNETR++ achieves promising segmentation performance by accurately segmenting the organs.
+![ACDC Qual Results](media/acdc_vs_unetr_suppl.jpg)
+
 
 <hr />
 
@@ -75,10 +80,30 @@ pip install -r requirements.txt
 <hr />
 
 ## Dataset
-We follow the same dataset preprocessing as in [nnFormer](https://github.com/282857341/nnFormer). 
+We follow the same dataset preprocessing as in [nnFormer](https://github.com/282857341/nnFormer). The raw dataset folders should be organized as follows: 
+
+```
+./DATASET/
+  ├── unetr_pp_raw/
+      ├── unetr_pp_raw_data/
+          ├── Task01_ACDC/
+              ├── imagesTr/
+              ├── imagesTs/
+              ├── labelsTr/
+              ├── labelsTs/
+              ├── dataset.json
+          ├── Task02_Synapse/
+              ├── imagesTr/
+              ├── imagesTs/
+              ├── labelsTr/
+              ├── labelsTs/
+              ├── dataset.json
+      ├── unetr_pp_cropped_data/
+ ```
+ 
 Please refer to [Setting up the datasets](https://github.com/282857341/nnFormer) on nnFormer repository for more details.
 Alternatively, you can download the preprocessed dataset for both Synapse and ACDC 
-from [this link](https://drive.google.com/file/d/1a1E33LmshhtHob6qxyyT7R_r-Ojm9-gU/view?usp=share_link) and extract it under the project directory.
+from [this link](https://drive.google.com/file/d/1GybpWhjSkLJttJJ75_0Spk0I7mmGcLS1) and extract it under the project directory.
 
 ## Training
 The following scripts can be used for training our UNETR++ model on Synapse and ACDC datasets,
@@ -90,7 +115,18 @@ bash run_training_acdc.sh
 <hr />
 
 ## Evaluation
-The following scripts can be used for training our UNETR++ model on Synapse and ACDC datasets,
+
+To reproduce the results of UNETR++: 
+
+1- Download [Synapse weights](https://drive.google.com/file/d/1JEOj-DSIs0NqnCwoMHNBImmuGGYx3M5v) and paste it in the following path
+```shell
+unetr_pp/evaluation/unetr_pp_synapse_checkpoint/unetr_pp/3d_fullres/Task002_Synapse/unetr_pp_trainer_synapse__unetr_pp_Plansv2.1/fold_0/
+```
+2- Download [ACDC weights](https://drive.google.com/file/d/1-MfsfZl5j25TVWC7QwZqO42Bn3UrHBjY) and paste it in the following path
+```shell
+unetr_pp/evaluation/unetr_pp_acdc_checkpoint/unetr_pp/3d_fullres/Task001_ACDC/unetr_pp_trainer_acdc__unetr_pp_Plansv2.1/fold_0/
+```
+3- The following scripts can be used for evaluating our UNETR++ model on Synapse and ACDC datasets,
 ```shell
 bash run_evaluation_synapse.sh
 bash run_evaluation_acdc.sh
