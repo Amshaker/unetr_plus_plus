@@ -21,7 +21,6 @@ In this paper, we propose a 3D medical image segmentation approach, named UNETR+
 Our spatial attention formulation is efficient having linear complexity with respect to the input sequence length. To enable communication between spatial and channel-focused branches, we share the weights of query and key mapping functions that provide a complimentary benefit (paired attention), while also reducing the overall network parameters. Our extensive evaluations on three benchmarks, Synapse, BTCV and ACDC, reveal the effectiveness of the proposed contributions in terms of both efficiency and accuracy. On Synapse dataset, our UNETR++ sets a new state-of-the-art with a Dice Similarity Score of 87.2\%, while being significantly efficient with a reduction of over 71\% in terms of both parameters and FLOPs, compared to the best existing method in the literature.* 
 <hr />
 
-<hr />
 
 ## Architecture overview of UNETR++
 Overview of our UNETR++ approach with hierarchical encoder-decoder structure. The 3D patches are fed to the encoder, whose outputs are then connected to the decoder via skip connections followed by convolutional blocks to produce the final segmentation mask. The focus of our design is the introduction of an _efficient paired-attention_ (EPA) block. Each EPA block performs two tasks using parallel attention modules with shared keys-queries and different value layers to efficiently learn enriched spatial-channel feature representations. As illustrated in the EPA block diagram (on the right), the first (top) attention module aggregates the spatial features by a weighted sum of the projected features in a linear manner to compute the spatial attention maps, while the second (bottom) attention module emphasizes the dependencies in the channels and computes the channel attention maps. Finally, the outputs of the two attention modules are fused and passed to convolutional blocks to enhance the feature representation, leading to better segmentation masks.
@@ -29,8 +28,6 @@ Overview of our UNETR++ approach with hierarchical encoder-decoder structure. Th
 
 <hr />
 
-
-<hr />
 
 ## Results
 
@@ -77,7 +74,6 @@ pip install -r requirements.txt
 ```
 <hr />
 
-<hr />
 
 ## Dataset
 We follow the same dataset preprocessing as in [nnFormer](https://github.com/282857341/nnFormer). The raw dataset folders should be organized as follows: 
