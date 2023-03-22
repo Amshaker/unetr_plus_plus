@@ -8,17 +8,15 @@
 
 
 ## :rocket: News
+* **(Mar 22, 2023):** UNETR++ code & weights are released for Decathlon-Lung and BRaTs.
 * **(Dec 15, 2022):** UNETR++ weights are released for Synapse & ACDC datasets.
 * **(Dec 09, 2022):** UNETR++ training and evaluation codes are released.
 
 <hr />
 
 ![main figure](media/intro_fig.jpg)
-> **Abstract:** *Owing to the success of transformer models, recent works study their applicability in 3D medical segmentation tasks. 
-Within the transformer models, the self-attention mechanism is one of the main building blocks that strives to capture long-range dependencies, compared to the local convolutional-based design.
-However, the self-attention operation has quadratic complexity which proves to be a computational bottleneck, especially in volumetric medical imaging, where the inputs are 3D with numerous slices. 
-In this paper, we propose a 3D medical image segmentation approach, named UNETR++, that offers both high-quality segmentation masks as well as efficiency in terms of parameters and compute cost. The core of our design is the introduction of a novel efficient paired attention (EPA) block that efficiently learns spatial and channel-wise discriminative features using a pair of inter-dependent branches based on spatial and channel attention.
-Our spatial attention formulation is efficient having linear complexity with respect to the input sequence length. To enable communication between spatial and channel-focused branches, we share the weights of query and key mapping functions that provide a complimentary benefit (paired attention), while also reducing the overall network parameters. Our extensive evaluations on three benchmarks, Synapse, BTCV and ACDC, reveal the effectiveness of the proposed contributions in terms of both efficiency and accuracy. On Synapse dataset, our UNETR++ sets a new state-of-the-art with a Dice Similarity Score of 87.2\%, while being significantly efficient with a reduction of over 71\% in terms of both parameters and FLOPs, compared to the best existing method in the literature.* 
+> **Abstract:** *Owing to the success of transformer models, recent works study their applicability in 3D medical segmentation tasks. Within the transformer models, the self-attention mechanism is one of the main building blocks that strives to capture long-range dependencies. However, the self-attention operation has quadratic complexity which proves to be a computational bottleneck, especially in volumetric medical imaging, where the inputs are 3D with numerous slices.  In this paper, we propose a 3D medical image segmentation approach, named UNETR++, that offers both high-quality segmentation masks as well as efficiency in terms of parameters, compute cost, and inference speed. The core of our design is the introduction of a novel efficient paired attention (EPA) block that efficiently learns spatial and channel-wise discriminative features using a pair of inter-dependent branches based on spatial and channel attention.
+Our spatial attention formulation is efficient having linear complexity with respect to the input sequence length. To enable communication between spatial and channel-focused branches, we share the weights of query and key mapping functions that provide a complimentary benefit (paired attention), while also reducing the overall network parameters. Our extensive evaluations on five benchmarks, Synapse, BTCV, ACDC, BRaTs, and Decathlon-Lung, reveal the effectiveness of our contributions in terms of both efficiency and accuracy. On Synapse, our UNETR++ sets a new state-of-the-art with a Dice Score of 87.2%, while being significantly efficient with a reduction of over 71% in terms of both parameters and FLOPs, compared to the best method in the literature.* 
 <hr />
 
 
@@ -76,36 +74,85 @@ pip install -r requirements.txt
 
 
 ## Dataset
-We follow the same dataset preprocessing as in [nnFormer](https://github.com/282857341/nnFormer). The raw dataset folders should be organized as follows: 
+We follow the same dataset preprocessing as in [nnFormer](https://github.com/282857341/nnFormer). We conducted extensive experiments on five benchmarks: Synapse, BTCV, ACDC, BRaTs, and Decathlon-Lung. 
+
+The dataset folders for Synapse should be organized as follows: 
 
 ```
-./DATASET/
+./DATASET_Synapse/
   ├── unetr_pp_raw/
       ├── unetr_pp_raw_data/
-          ├── Task01_ACDC/
+           ├── Task02_Synapse/
               ├── imagesTr/
               ├── imagesTs/
               ├── labelsTr/
               ├── labelsTs/
               ├── dataset.json
-          ├── Task02_Synapse/
+           ├── Task002_Synapse
+       ├── unetr_pp_cropped_data/
+           ├── Task002_Synapse
+ ```
+ 
+ The dataset folders for ACDC should be organized as follows: 
+
+```
+./DATASET_Acdc/
+  ├── unetr_pp_raw/
+      ├── unetr_pp_raw_data/
+           ├── Task01_ACDC/
               ├── imagesTr/
               ├── imagesTs/
               ├── labelsTr/
               ├── labelsTs/
               ├── dataset.json
-      ├── unetr_pp_cropped_data/
+           ├── Task001_ACDC
+       ├── unetr_pp_cropped_data/
+           ├── Task001_ACDC
+ ```
+ 
+  The dataset folders for Decathlon-Lung should be organized as follows: 
+
+```
+./DATASET_Lungs/
+  ├── unetr_pp_raw/
+      ├── unetr_pp_raw_data/
+           ├── Task06_Lung/
+              ├── imagesTr/
+              ├── imagesTs/
+              ├── labelsTr/
+              ├── labelsTs/
+              ├── dataset.json
+           ├── Task006_Lung
+       ├── unetr_pp_cropped_data/
+           ├── Task006_Lung
+ ```
+   The dataset folders for BRaTs should be organized as follows: 
+
+```
+./DATASET_Tumor/
+  ├── unetr_pp_raw/
+      ├── unetr_pp_raw_data/
+           ├── Task03_tumor/
+              ├── imagesTr/
+              ├── imagesTs/
+              ├── labelsTr/
+              ├── labelsTs/
+              ├── dataset.json
+           ├── Task003_tumor
+       ├── unetr_pp_cropped_data/
+           ├── Task003_tumor
  ```
  
 Please refer to [Setting up the datasets](https://github.com/282857341/nnFormer) on nnFormer repository for more details.
-Alternatively, you can download the preprocessed dataset for both Synapse and ACDC 
-from [this link](https://drive.google.com/file/d/1GybpWhjSkLJttJJ75_0Spk0I7mmGcLS1) and extract it under the project directory.
+Alternatively, you can download the preprocessed dataset for [Synapse](https://drive.google.com/file/d/1V2y6HbBFsl4nkU47BUKUgJveQbx1kTKD), [ACDC](https://drive.google.com/file/d/1-4sO9vqYZx2zbOJVhCNV3qBLkeEIIK06), [Decathlon-Lung](https://drive.google.com/file/d/1KdEhz7hWjIQvmz5dCFwxlttpUFQJmCnz), [BRaTs](https://drive.google.com/file/d/1G_apEM7wwJhF2qiJ5biVQ6iHpuxCd3bL), and extract it under the project directory.
 
 ## Training
-The following scripts can be used for training our UNETR++ model on Synapse and ACDC datasets,
+The following scripts can be used for training our UNETR++ model on the five datasets,
 ```shell
-bash run_training_synapse.sh
-bash run_training_acdc.sh
+bash training_scripts/run_training_synapse.sh
+bash training_scripts/run_training_acdc.sh
+bash training_scripts/run_training_lung.sh
+bash training_scripts/run_training_tumor.sh
 ```
 
 <hr />
@@ -114,18 +161,40 @@ bash run_training_acdc.sh
 
 To reproduce the results of UNETR++: 
 
-1- Download [Synapse weights](https://drive.google.com/file/d/1JEOj-DSIs0NqnCwoMHNBImmuGGYx3M5v) and paste it in the following path
+1- Download [Synapse weights](https://drive.google.com/file/d/13JuLMeDQRR_a3c3tr2V2oav6I29fJoBa) and paste ```model_final_checkpoint.model``` in the following path:
 ```shell
 unetr_pp/evaluation/unetr_pp_synapse_checkpoint/unetr_pp/3d_fullres/Task002_Synapse/unetr_pp_trainer_synapse__unetr_pp_Plansv2.1/fold_0/
 ```
-2- Download [ACDC weights](https://drive.google.com/file/d/1-MfsfZl5j25TVWC7QwZqO42Bn3UrHBjY) and paste it in the following path
+Then, run 
+```shell
+bash evaluation_scripts/run_evaluation_synapse.sh
+```
+2- Download [ACDC weights](https://drive.google.com/file/d/15YXiHai1zLc1ycmXaiSHetYbLGum3tV5) and paste ```model_final_checkpoint.model``` it in the following path:
 ```shell
 unetr_pp/evaluation/unetr_pp_acdc_checkpoint/unetr_pp/3d_fullres/Task001_ACDC/unetr_pp_trainer_acdc__unetr_pp_Plansv2.1/fold_0/
 ```
-3- The following scripts can be used for evaluating our UNETR++ model on Synapse and ACDC datasets,
+Then, run 
 ```shell
-bash run_evaluation_synapse.sh
-bash run_evaluation_acdc.sh
+bash evaluation_scripts/run_evaluation_acdc.sh
+```
+
+
+3- Download [Decathlon-Lung weights](https://drive.google.com/file/d/1i4cccRlNQy-akNMxMOAR_A7qk0TKo9Ek) and paste ```model_final_checkpoint.model``` it in the following path:
+```shell
+unetr_pp/evaluation/unetr_pp_lung_checkpoint/unetr_pp/3d_fullres/Task006_Lung/unetr_pp_trainer_lung__unetr_pp_Plansv2.1/fold_0/
+```
+Then, run 
+```shell
+bash evaluation_scripts/run_evaluation_lung.sh
+```
+
+4- Download [BRaTs weights](https://drive.google.com/file/d/1LiqnVKKv3DrDKvo6J0oClhIFirhaz5PG) and paste ```model_final_checkpoint.model``` it in the following path:
+```shell
+unetr_pp/evaluation/unetr_pp_lung_checkpoint/unetr_pp/3d_fullres/Task003_tumor/unetr_pp_trainer_tumor__unetr_pp_Plansv2.1/fold_0/
+```
+Then, run 
+```shell
+bash evaluation_scripts/run_evaluation_tumor.sh
 ```
 
 <hr />
