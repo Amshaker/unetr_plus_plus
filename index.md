@@ -45,6 +45,10 @@ Our spatial attention formulation is efficient having linear complexity with res
 ![results](images/Brats_quantitative_results.png)
 
 
+## Qualitative Baseline Comparison (Synapse)
+![results](images/Baseline_Comparison_fig_2.jpg)
+![results](images/Baseline_comparison_fig.jpg)
+
 ## Qualitative Results (Synapse)
 
 ![results](images/UNETR++_results_fig.jpg)
