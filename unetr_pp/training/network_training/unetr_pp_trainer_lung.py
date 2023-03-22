@@ -26,18 +26,18 @@ from unetr_pp.network_architecture.neural_network import SegmentationNetwork
 from unetr_pp.training.data_augmentation.default_data_augmentation import default_2D_augmentation_params, \
     get_patch_size, default_3D_augmentation_params
 from unetr_pp.training.dataloading.dataset_loading import unpack_dataset
-from unetr_pp.training.network_training.Trainer_acdc import Trainer_acdc
+from unetr_pp.training.network_training.Trainer_lung import Trainer_lung
 from unetr_pp.utilities.nd_softmax import softmax_helper
 from sklearn.model_selection import KFold
 from torch import nn
 from torch.cuda.amp import autocast
 from unetr_pp.training.learning_rate.poly_lr import poly_lr
 from batchgenerators.utilities.file_and_folder_operations import *
-from unetr_pp.network_architecture.acdc.unetr_pp_acdc import UNETR_PP
+from unetr_pp.network_architecture.lung.unetr_pp_lung import UNETR_PP
 from fvcore.nn import FlopCountAnalysis
 
 
-class unetr_pp_trainer_acdc(Trainer_acdc):
+class unetr_pp_trainer_lung(Trainer_lung):
     """
     Info for Fabian: same as internal nnUNetTrainerV2_2
     """
@@ -60,9 +60,10 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
         else:
             Stage = 0
 
-        self.crop_size = self.plans['plans_per_stage'][Stage]['patch_size']
+        self.crop_size = (32,192,192) #self.plans['plans_per_stage'][Stage]['patch_size']
         self.input_channels = self.plans['num_modalities']
         self.num_classes = self.plans['num_classes'] + 1
+        #print("#############classes", self.num_classes)
         self.conv_op = nn.Conv3d
 
         self.embedding_dim = 96
@@ -89,8 +90,8 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
             if force_load_plans or (self.plans is None):
                 self.load_plans_file()
 
-            self.plans['plans_per_stage'][0]['patch_size'] = np.array([16, 160, 160])
-            self.crop_size = np.array([16, 160, 160])
+            self.plans['plans_per_stage'][0]['patch_size'] = np.array([32, 192, 192])
+            self.crop_size = np.array([32, 192, 192])
 
             self.plans['plans_per_stage'][self.stage]['pool_op_kernel_sizes'] = [[1, 4, 4], [2, 2, 2], [2, 2, 2]]
             self.process_plans(self.plans)
@@ -182,7 +183,7 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
         self.network.inference_apply_nonlin = softmax_helper
         # Print the network parameters & Flops
         n_parameters = sum(p.numel() for p in self.network.parameters() if p.requires_grad)
-        input_res = (1, 16, 160, 160)
+        input_res = (1, 32, 192, 192)
         input = torch.ones(()).new_empty((1, *input_res), dtype=next(self.network.parameters()).dtype,
                                          device=next(self.network.parameters()).device)
         flops = FlopCountAnalysis(self.network, input)
@@ -265,6 +266,7 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
         """
         data_dict = next(data_generator)
         data = data_dict['data']
+        #print("****data:",data.shape)
         target = data_dict['target']
 
         data = maybe_to_torch(data)
@@ -343,63 +345,21 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
                 self.print_to_log_file("The split file contains %d splits." % len(splits))
 
             self.print_to_log_file("Desired fold for training: %d" % self.fold)
-            splits[self.fold]['train'] = np.array(['patient001_frame01', 'patient001_frame12', 'patient004_frame01',
-                                                   'patient004_frame15', 'patient005_frame01', 'patient005_frame13',
-                                                   'patient006_frame01', 'patient006_frame16', 'patient007_frame01',
-                                                   'patient007_frame07', 'patient010_frame01', 'patient010_frame13',
-                                                   'patient011_frame01', 'patient011_frame08', 'patient013_frame01',
-                                                   'patient013_frame14', 'patient015_frame01', 'patient015_frame10',
-                                                   'patient016_frame01', 'patient016_frame12', 'patient018_frame01',
-                                                   'patient018_frame10', 'patient019_frame01', 'patient019_frame11',
-                                                   'patient020_frame01', 'patient020_frame11', 'patient021_frame01',
-                                                   'patient021_frame13', 'patient022_frame01', 'patient022_frame11',
-                                                   'patient023_frame01', 'patient023_frame09', 'patient025_frame01',
-                                                   'patient025_frame09', 'patient026_frame01', 'patient026_frame12',
-                                                   'patient027_frame01', 'patient027_frame11', 'patient028_frame01',
-                                                   'patient028_frame09', 'patient029_frame01', 'patient029_frame12',
-                                                   'patient030_frame01', 'patient030_frame12', 'patient031_frame01',
-                                                   'patient031_frame10', 'patient032_frame01', 'patient032_frame12',
-                                                   'patient033_frame01', 'patient033_frame14', 'patient034_frame01',
-                                                   'patient034_frame16', 'patient035_frame01', 'patient035_frame11',
-                                                   'patient036_frame01', 'patient036_frame12', 'patient037_frame01',
-                                                   'patient037_frame12', 'patient038_frame01', 'patient038_frame11',
-                                                   'patient039_frame01', 'patient039_frame10', 'patient040_frame01',
-                                                   'patient040_frame13', 'patient041_frame01', 'patient041_frame11',
-                                                   'patient043_frame01', 'patient043_frame07', 'patient044_frame01',
-                                                   'patient044_frame11', 'patient045_frame01', 'patient045_frame13',
-                                                   'patient046_frame01', 'patient046_frame10', 'patient047_frame01',
-                                                   'patient047_frame09', 'patient050_frame01', 'patient050_frame12',
-                                                   'patient051_frame01', 'patient051_frame11', 'patient052_frame01',
-                                                   'patient052_frame09', 'patient054_frame01', 'patient054_frame12',
-                                                   'patient056_frame01', 'patient056_frame12', 'patient057_frame01',
-                                                   'patient057_frame09', 'patient058_frame01', 'patient058_frame14',
-                                                   'patient059_frame01', 'patient059_frame09', 'patient060_frame01',
-                                                   'patient060_frame14', 'patient061_frame01', 'patient061_frame10',
-                                                   'patient062_frame01', 'patient062_frame09', 'patient063_frame01',
-                                                   'patient063_frame16', 'patient065_frame01', 'patient065_frame14',
-                                                   'patient066_frame01', 'patient066_frame11', 'patient068_frame01',
-                                                   'patient068_frame12', 'patient069_frame01', 'patient069_frame12',
-                                                   'patient070_frame01', 'patient070_frame10', 'patient071_frame01',
-                                                   'patient071_frame09', 'patient072_frame01', 'patient072_frame11',
-                                                   'patient073_frame01', 'patient073_frame10', 'patient074_frame01',
-                                                   'patient074_frame12', 'patient075_frame01', 'patient075_frame06',
-                                                   'patient076_frame01', 'patient076_frame12', 'patient077_frame01',
-                                                   'patient077_frame09', 'patient078_frame01', 'patient078_frame09',
-                                                   'patient080_frame01', 'patient080_frame10', 'patient082_frame01',
-                                                   'patient082_frame07', 'patient083_frame01', 'patient083_frame08',
-                                                   'patient084_frame01', 'patient084_frame10', 'patient085_frame01',
-                                                   'patient085_frame09', 'patient086_frame01', 'patient086_frame08',
-                                                   'patient087_frame01', 'patient087_frame10', 'patient089_frame01',
-                                                   'patient089_frame10', 'patient090_frame04', 'patient090_frame11',
-                                                   'patient091_frame01', 'patient091_frame09', 'patient093_frame01',
-                                                   'patient093_frame14', 'patient094_frame01', 'patient094_frame07',
-                                                   'patient096_frame01', 'patient096_frame08', 'patient097_frame01', 
-                                                   'patient097_frame11', 'patient098_frame01', 'patient098_frame09',
-                                                   'patient099_frame01', 'patient099_frame09', 'patient100_frame01',
-                                                   'patient100_frame13'])
+            splits[self.fold]['train'] = np.array([ 'lung_053', 'lung_022', 'lung_041', 'lung_069', 'lung_014', 
+                                                    'lung_006', 'lung_065', 'lung_018', 'lung_096', 'lung_084',
+                                                    'lung_086', 'lung_043', 'lung_020', 'lung_051', 'lung_079', 
+                                                    'lung_004', 'lung_075', 'lung_016', 'lung_071', 'lung_028',
+                                                    'lung_055', 'lung_036', 'lung_047', 'lung_059', 'lung_061',
+                                                    'lung_010', 'lung_073', 'lung_026', 'lung_038', 'lung_045',
+                                                    'lung_034', 'lung_049', 'lung_057', 'lung_080', 'lung_092',
+                                                    'lung_015', 'lung_064', 'lung_031', 'lung_023', 'lung_005',
+                                                    'lung_078', 'lung_066', 'lung_009', 'lung_074', 'lung_042',
+                                                    'lung_033', 'lung_095', 'lung_037', 'lung_054', 'lung_029'
+                                                  ])
                                                    
-            splits[self.fold]['val'] = np.array(['patient002_frame01', 'patient002_frame12', 'patient003_frame01','patient003_frame15', 'patient008_frame01', 'patient008_frame13', 'patient009_frame01', 'patient009_frame13', 'patient012_frame01', 'patient012_frame13', 'patient014_frame01', 'patient014_frame13', 'patient017_frame01', 'patient017_frame09', 'patient024_frame01', 'patient024_frame09', 'patient042_frame01', 'patient042_frame16', 'patient048_frame01', 'patient048_frame08', 'patient049_frame01', 'patient049_frame11', 'patient053_frame01', 'patient053_frame12', 'patient055_frame01', 'patient055_frame10', 'patient064_frame01', 'patient064_frame12', 'patient067_frame01', 'patient067_frame10', 'patient079_frame01', 'patient079_frame11', 'patient081_frame01', 'patient081_frame07', 'patient088_frame01', 'patient088_frame12', 'patient092_frame01', 'patient092_frame06', 'patient095_frame01', 'patient095_frame12'])
-
+            splits[self.fold]['val'] = np.array([ 'lung_058', 'lung_025', 'lung_046', 'lung_070', 'lung_001', 
+                                                  'lung_062', 'lung_083', 'lung_081', 'lung_093', 'lung_044', 
+                                                  'lung_027', 'lung_048', 'lung_003' ])
             if self.fold < len(splits):
                 tr_keys = splits[self.fold]['train']
                 val_keys = splits[self.fold]['val']
@@ -537,3 +497,5 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
         ret = super().run_training()
         self.network.do_ds = ds
         return ret
+
+

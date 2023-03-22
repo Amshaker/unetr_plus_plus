@@ -21,25 +21,25 @@ import torch
 from unetr_pp.training.data_augmentation.data_augmentation_moreDA import get_moreDA_augmentation
 from unetr_pp.training.loss_functions.deep_supervision import MultipleOutputLoss2
 from unetr_pp.utilities.to_torch import maybe_to_torch, to_cuda
+from unetr_pp.network_architecture.tumor.unetr_pp_tumor import UNETR_PP
 from unetr_pp.network_architecture.initialization import InitWeights_He
 from unetr_pp.network_architecture.neural_network import SegmentationNetwork
 from unetr_pp.training.data_augmentation.default_data_augmentation import default_2D_augmentation_params, \
     get_patch_size, default_3D_augmentation_params
 from unetr_pp.training.dataloading.dataset_loading import unpack_dataset
-from unetr_pp.training.network_training.Trainer_acdc import Trainer_acdc
+from unetr_pp.training.network_training.Trainer_tumor import Trainer_tumor
 from unetr_pp.utilities.nd_softmax import softmax_helper
 from sklearn.model_selection import KFold
 from torch import nn
 from torch.cuda.amp import autocast
 from unetr_pp.training.learning_rate.poly_lr import poly_lr
 from batchgenerators.utilities.file_and_folder_operations import *
-from unetr_pp.network_architecture.acdc.unetr_pp_acdc import UNETR_PP
 from fvcore.nn import FlopCountAnalysis
 
 
-class unetr_pp_trainer_acdc(Trainer_acdc):
+class unetr_pp_trainer_tumor(Trainer_tumor):
     """
-    Info for Fabian: same as internal nnUNetTrainerV2_2
+    same as internal nnFromerTrinerV2 and nnUNetTrainerV2_2
     """
 
     def __init__(self, plans_file, fold, output_folder=None, dataset_directory=None, batch_dice=True, stage=None,
@@ -54,23 +54,25 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
         self.load_pretrain_weight = False
 
         self.load_plans_file()
-
-        if len(self.plans['plans_per_stage']) == 2:
-            Stage = 1
+        
+        if len(self.plans['plans_per_stage'])==2:
+            Stage=1
         else:
-            Stage = 0
+            Stage=0
 
         self.crop_size = self.plans['plans_per_stage'][Stage]['patch_size']
+        print("self.crop_size in init train:",self.crop_size)
         self.input_channels = self.plans['num_modalities']
+        #print("SELF.INPUT CHANNELS",self.input_channels)
         self.num_classes = self.plans['num_classes'] + 1
+        #print("SELF.NUM_CLASSES",self.num_classes)
         self.conv_op = nn.Conv3d
 
         self.embedding_dim = 96
         self.depths = [2, 2, 2, 2]
         self.num_heads = [3, 6, 12, 24]
-        self.embedding_patch_size = [1, 4, 4]
-        self.window_size = [[3, 5, 5], [3, 5, 5], [7, 10, 10], [3, 5, 5]]
-        self.down_stride = [[1, 4, 4], [1, 8, 8], [2, 16, 16], [4, 32, 32]]
+        self.embedding_patch_size = [4, 4, 4]
+        self.window_size = [4, 4, 8, 4]
         self.deep_supervision = True
 
     def initialize(self, training=True, force_load_plans=False):
@@ -89,10 +91,7 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
             if force_load_plans or (self.plans is None):
                 self.load_plans_file()
 
-            self.plans['plans_per_stage'][0]['patch_size'] = np.array([16, 160, 160])
-            self.crop_size = np.array([16, 160, 160])
-
-            self.plans['plans_per_stage'][self.stage]['pool_op_kernel_sizes'] = [[1, 4, 4], [2, 2, 2], [2, 2, 2]]
+            self.plans['plans_per_stage'][self.stage]['pool_op_kernel_sizes'] = [[4, 4, 4], [2, 2, 2], [2, 2, 2]]
             self.process_plans(self.plans)
 
             self.setup_DA_params()
@@ -176,13 +175,14 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
                              dims=[32, 64, 128, 256],
                              do_ds=True,
                              )
-
+        #print("self.input_channels", self.input_channels)
+        #print("self.num_classes", self.num_classes)
         if torch.cuda.is_available():
             self.network.cuda()
         self.network.inference_apply_nonlin = softmax_helper
         # Print the network parameters & Flops
         n_parameters = sum(p.numel() for p in self.network.parameters() if p.requires_grad)
-        input_res = (1, 16, 160, 160)
+        input_res = (4, 128, 128, 128)
         input = torch.ones(()).new_empty((1, *input_res), dtype=next(self.network.parameters()).dtype,
                                          device=next(self.network.parameters()).device)
         flops = FlopCountAnalysis(self.network, input)
@@ -343,63 +343,100 @@ class unetr_pp_trainer_acdc(Trainer_acdc):
                 self.print_to_log_file("The split file contains %d splits." % len(splits))
 
             self.print_to_log_file("Desired fold for training: %d" % self.fold)
-            splits[self.fold]['train'] = np.array(['patient001_frame01', 'patient001_frame12', 'patient004_frame01',
-                                                   'patient004_frame15', 'patient005_frame01', 'patient005_frame13',
-                                                   'patient006_frame01', 'patient006_frame16', 'patient007_frame01',
-                                                   'patient007_frame07', 'patient010_frame01', 'patient010_frame13',
-                                                   'patient011_frame01', 'patient011_frame08', 'patient013_frame01',
-                                                   'patient013_frame14', 'patient015_frame01', 'patient015_frame10',
-                                                   'patient016_frame01', 'patient016_frame12', 'patient018_frame01',
-                                                   'patient018_frame10', 'patient019_frame01', 'patient019_frame11',
-                                                   'patient020_frame01', 'patient020_frame11', 'patient021_frame01',
-                                                   'patient021_frame13', 'patient022_frame01', 'patient022_frame11',
-                                                   'patient023_frame01', 'patient023_frame09', 'patient025_frame01',
-                                                   'patient025_frame09', 'patient026_frame01', 'patient026_frame12',
-                                                   'patient027_frame01', 'patient027_frame11', 'patient028_frame01',
-                                                   'patient028_frame09', 'patient029_frame01', 'patient029_frame12',
-                                                   'patient030_frame01', 'patient030_frame12', 'patient031_frame01',
-                                                   'patient031_frame10', 'patient032_frame01', 'patient032_frame12',
-                                                   'patient033_frame01', 'patient033_frame14', 'patient034_frame01',
-                                                   'patient034_frame16', 'patient035_frame01', 'patient035_frame11',
-                                                   'patient036_frame01', 'patient036_frame12', 'patient037_frame01',
-                                                   'patient037_frame12', 'patient038_frame01', 'patient038_frame11',
-                                                   'patient039_frame01', 'patient039_frame10', 'patient040_frame01',
-                                                   'patient040_frame13', 'patient041_frame01', 'patient041_frame11',
-                                                   'patient043_frame01', 'patient043_frame07', 'patient044_frame01',
-                                                   'patient044_frame11', 'patient045_frame01', 'patient045_frame13',
-                                                   'patient046_frame01', 'patient046_frame10', 'patient047_frame01',
-                                                   'patient047_frame09', 'patient050_frame01', 'patient050_frame12',
-                                                   'patient051_frame01', 'patient051_frame11', 'patient052_frame01',
-                                                   'patient052_frame09', 'patient054_frame01', 'patient054_frame12',
-                                                   'patient056_frame01', 'patient056_frame12', 'patient057_frame01',
-                                                   'patient057_frame09', 'patient058_frame01', 'patient058_frame14',
-                                                   'patient059_frame01', 'patient059_frame09', 'patient060_frame01',
-                                                   'patient060_frame14', 'patient061_frame01', 'patient061_frame10',
-                                                   'patient062_frame01', 'patient062_frame09', 'patient063_frame01',
-                                                   'patient063_frame16', 'patient065_frame01', 'patient065_frame14',
-                                                   'patient066_frame01', 'patient066_frame11', 'patient068_frame01',
-                                                   'patient068_frame12', 'patient069_frame01', 'patient069_frame12',
-                                                   'patient070_frame01', 'patient070_frame10', 'patient071_frame01',
-                                                   'patient071_frame09', 'patient072_frame01', 'patient072_frame11',
-                                                   'patient073_frame01', 'patient073_frame10', 'patient074_frame01',
-                                                   'patient074_frame12', 'patient075_frame01', 'patient075_frame06',
-                                                   'patient076_frame01', 'patient076_frame12', 'patient077_frame01',
-                                                   'patient077_frame09', 'patient078_frame01', 'patient078_frame09',
-                                                   'patient080_frame01', 'patient080_frame10', 'patient082_frame01',
-                                                   'patient082_frame07', 'patient083_frame01', 'patient083_frame08',
-                                                   'patient084_frame01', 'patient084_frame10', 'patient085_frame01',
-                                                   'patient085_frame09', 'patient086_frame01', 'patient086_frame08',
-                                                   'patient087_frame01', 'patient087_frame10', 'patient089_frame01',
-                                                   'patient089_frame10', 'patient090_frame04', 'patient090_frame11',
-                                                   'patient091_frame01', 'patient091_frame09', 'patient093_frame01',
-                                                   'patient093_frame14', 'patient094_frame01', 'patient094_frame07',
-                                                   'patient096_frame01', 'patient096_frame08', 'patient097_frame01', 
-                                                   'patient097_frame11', 'patient098_frame01', 'patient098_frame09',
-                                                   'patient099_frame01', 'patient099_frame09', 'patient100_frame01',
-                                                   'patient100_frame13'])
-                                                   
-            splits[self.fold]['val'] = np.array(['patient002_frame01', 'patient002_frame12', 'patient003_frame01','patient003_frame15', 'patient008_frame01', 'patient008_frame13', 'patient009_frame01', 'patient009_frame13', 'patient012_frame01', 'patient012_frame13', 'patient014_frame01', 'patient014_frame13', 'patient017_frame01', 'patient017_frame09', 'patient024_frame01', 'patient024_frame09', 'patient042_frame01', 'patient042_frame16', 'patient048_frame01', 'patient048_frame08', 'patient049_frame01', 'patient049_frame11', 'patient053_frame01', 'patient053_frame12', 'patient055_frame01', 'patient055_frame10', 'patient064_frame01', 'patient064_frame12', 'patient067_frame01', 'patient067_frame10', 'patient079_frame01', 'patient079_frame11', 'patient081_frame01', 'patient081_frame07', 'patient088_frame01', 'patient088_frame12', 'patient092_frame01', 'patient092_frame06', 'patient095_frame01', 'patient095_frame12'])
-
+            splits[self.fold]['train'] = np.array([
+       'BRATS_001', 'BRATS_002', 'BRATS_003', 'BRATS_004', 'BRATS_005',
+       'BRATS_006', 'BRATS_007', 'BRATS_008', 'BRATS_009', 'BRATS_010',
+       'BRATS_013', 'BRATS_014', 'BRATS_015', 'BRATS_016', 'BRATS_017',
+       'BRATS_019', 'BRATS_022', 'BRATS_023', 'BRATS_024', 'BRATS_025',
+       'BRATS_026', 'BRATS_027', 'BRATS_030', 'BRATS_031', 'BRATS_033',
+       'BRATS_035', 'BRATS_037', 'BRATS_038', 'BRATS_039', 'BRATS_040',
+       'BRATS_042', 'BRATS_043', 'BRATS_044', 'BRATS_045', 'BRATS_046',
+       'BRATS_048', 'BRATS_050', 'BRATS_051', 'BRATS_052', 'BRATS_054',
+       'BRATS_055', 'BRATS_060', 'BRATS_061', 'BRATS_062', 'BRATS_063',
+       'BRATS_064', 'BRATS_065', 'BRATS_066', 'BRATS_067', 'BRATS_068',
+       'BRATS_070', 'BRATS_072', 'BRATS_073', 'BRATS_074', 'BRATS_075',
+       'BRATS_078', 'BRATS_079', 'BRATS_080', 'BRATS_081', 'BRATS_082',
+       'BRATS_083', 'BRATS_084', 'BRATS_085', 'BRATS_086', 'BRATS_087',
+       'BRATS_088', 'BRATS_091', 'BRATS_093', 'BRATS_094', 'BRATS_096',
+       'BRATS_097', 'BRATS_098', 'BRATS_100', 'BRATS_101', 'BRATS_102',
+       'BRATS_104', 'BRATS_108', 'BRATS_110', 'BRATS_111', 'BRATS_112',
+       'BRATS_115', 'BRATS_116', 'BRATS_117', 'BRATS_119', 'BRATS_120',
+       'BRATS_121', 'BRATS_122', 'BRATS_123', 'BRATS_125', 'BRATS_126',
+       'BRATS_127', 'BRATS_128', 'BRATS_129', 'BRATS_130', 'BRATS_131',
+       'BRATS_132', 'BRATS_133', 'BRATS_134', 'BRATS_135', 'BRATS_136',
+       'BRATS_137', 'BRATS_138', 'BRATS_140', 'BRATS_141', 'BRATS_142',
+       'BRATS_143', 'BRATS_144', 'BRATS_146', 'BRATS_148', 'BRATS_149',
+       'BRATS_150', 'BRATS_153', 'BRATS_154', 'BRATS_155', 'BRATS_158',
+       'BRATS_159', 'BRATS_160', 'BRATS_162', 'BRATS_163', 'BRATS_164',
+       'BRATS_165', 'BRATS_166', 'BRATS_167', 'BRATS_168', 'BRATS_169',
+       'BRATS_170', 'BRATS_171', 'BRATS_173', 'BRATS_174', 'BRATS_175',
+       'BRATS_177', 'BRATS_178', 'BRATS_179', 'BRATS_180', 'BRATS_182',
+       'BRATS_183', 'BRATS_184', 'BRATS_185', 'BRATS_186', 'BRATS_187',
+       'BRATS_188', 'BRATS_189', 'BRATS_191', 'BRATS_192', 'BRATS_193',
+       'BRATS_195', 'BRATS_197', 'BRATS_199', 'BRATS_200', 'BRATS_201',
+       'BRATS_202', 'BRATS_203', 'BRATS_206', 'BRATS_207', 'BRATS_208',
+       'BRATS_210', 'BRATS_211', 'BRATS_212', 'BRATS_213', 'BRATS_214',
+       'BRATS_215', 'BRATS_216', 'BRATS_217', 'BRATS_218', 'BRATS_219',
+       'BRATS_222', 'BRATS_223', 'BRATS_224', 'BRATS_225', 'BRATS_226',
+       'BRATS_228', 'BRATS_229', 'BRATS_230', 'BRATS_231', 'BRATS_232',
+       'BRATS_233', 'BRATS_236', 'BRATS_237', 'BRATS_238', 'BRATS_239',
+       'BRATS_241', 'BRATS_243', 'BRATS_244', 'BRATS_246', 'BRATS_247',
+       'BRATS_248', 'BRATS_249', 'BRATS_251', 'BRATS_252', 'BRATS_253',
+       'BRATS_254', 'BRATS_255', 'BRATS_258', 'BRATS_259', 'BRATS_261',
+       'BRATS_262', 'BRATS_263', 'BRATS_264', 'BRATS_265', 'BRATS_266',
+       'BRATS_267', 'BRATS_268', 'BRATS_272', 'BRATS_273', 'BRATS_274',
+       'BRATS_275', 'BRATS_276', 'BRATS_277', 'BRATS_278', 'BRATS_279',
+       'BRATS_280', 'BRATS_283', 'BRATS_284', 'BRATS_285', 'BRATS_286',
+       'BRATS_288', 'BRATS_290', 'BRATS_293', 'BRATS_294', 'BRATS_296',
+       'BRATS_297', 'BRATS_298', 'BRATS_299', 'BRATS_300', 'BRATS_301',
+       'BRATS_302', 'BRATS_303', 'BRATS_304', 'BRATS_306', 'BRATS_307',
+       'BRATS_308', 'BRATS_309', 'BRATS_311', 'BRATS_312', 'BRATS_313',
+       'BRATS_315', 'BRATS_316', 'BRATS_317', 'BRATS_318', 'BRATS_319',
+       'BRATS_320', 'BRATS_321', 'BRATS_322', 'BRATS_324', 'BRATS_326',
+       'BRATS_328', 'BRATS_329', 'BRATS_332', 'BRATS_334', 'BRATS_335',
+       'BRATS_336', 'BRATS_338', 'BRATS_339', 'BRATS_340', 'BRATS_341',
+       'BRATS_342', 'BRATS_343', 'BRATS_344', 'BRATS_345', 'BRATS_347',
+       'BRATS_348', 'BRATS_349', 'BRATS_351', 'BRATS_353', 'BRATS_354',
+       'BRATS_355', 'BRATS_356', 'BRATS_357', 'BRATS_358', 'BRATS_359',
+       'BRATS_360', 'BRATS_363', 'BRATS_364', 'BRATS_365', 'BRATS_366',
+       'BRATS_367', 'BRATS_368', 'BRATS_369', 'BRATS_370', 'BRATS_371',
+       'BRATS_372', 'BRATS_373', 'BRATS_374', 'BRATS_375', 'BRATS_376',
+       'BRATS_377', 'BRATS_378', 'BRATS_379', 'BRATS_380', 'BRATS_381',
+       'BRATS_383', 'BRATS_384', 'BRATS_385', 'BRATS_386', 'BRATS_387',
+       'BRATS_388', 'BRATS_390', 'BRATS_391', 'BRATS_392', 'BRATS_393',
+       'BRATS_394', 'BRATS_395', 'BRATS_396', 'BRATS_398', 'BRATS_399',
+       'BRATS_401', 'BRATS_403', 'BRATS_404', 'BRATS_405', 'BRATS_407',
+       'BRATS_408', 'BRATS_409', 'BRATS_410', 'BRATS_411', 'BRATS_412',
+       'BRATS_413', 'BRATS_414', 'BRATS_415', 'BRATS_417', 'BRATS_418',
+       'BRATS_419', 'BRATS_420', 'BRATS_421', 'BRATS_422', 'BRATS_423',
+       'BRATS_424', 'BRATS_426', 'BRATS_428', 'BRATS_429', 'BRATS_430',
+       'BRATS_431', 'BRATS_433', 'BRATS_434', 'BRATS_435', 'BRATS_436',
+       'BRATS_437', 'BRATS_438', 'BRATS_439', 'BRATS_441', 'BRATS_442',
+       'BRATS_443', 'BRATS_444', 'BRATS_445', 'BRATS_446', 'BRATS_449',
+       'BRATS_451', 'BRATS_452', 'BRATS_453', 'BRATS_454', 'BRATS_455',
+       'BRATS_457', 'BRATS_458', 'BRATS_459', 'BRATS_460', 'BRATS_463',
+       'BRATS_464', 'BRATS_466', 'BRATS_467', 'BRATS_468', 'BRATS_469',
+       'BRATS_470', 'BRATS_472', 'BRATS_475', 'BRATS_477', 'BRATS_478',
+       'BRATS_481', 'BRATS_482', 'BRATS_483','BRATS_400', 'BRATS_402',
+       'BRATS_406', 'BRATS_416', 'BRATS_427', 'BRATS_440', 'BRATS_447',
+       'BRATS_448', 'BRATS_456', 'BRATS_461', 'BRATS_462', 'BRATS_465',
+       'BRATS_471', 'BRATS_473', 'BRATS_474', 'BRATS_476', 'BRATS_479',
+       'BRATS_480', 'BRATS_484'])
+            splits[self.fold]['val'] = np.array(['BRATS_011', 'BRATS_012', 'BRATS_018', 'BRATS_020', 'BRATS_021',
+       'BRATS_028', 'BRATS_029', 'BRATS_032', 'BRATS_034', 'BRATS_036',
+       'BRATS_041', 'BRATS_047', 'BRATS_049', 'BRATS_053', 'BRATS_056',
+       'BRATS_057', 'BRATS_069', 'BRATS_071', 'BRATS_089', 'BRATS_090',
+       'BRATS_092', 'BRATS_095', 'BRATS_103', 'BRATS_105', 'BRATS_106',
+       'BRATS_107', 'BRATS_109', 'BRATS_118', 'BRATS_145', 'BRATS_147',
+       'BRATS_156', 'BRATS_161', 'BRATS_172', 'BRATS_176', 'BRATS_181',
+       'BRATS_194', 'BRATS_196', 'BRATS_198', 'BRATS_204', 'BRATS_205',
+       'BRATS_209', 'BRATS_220', 'BRATS_221', 'BRATS_227', 'BRATS_234',
+       'BRATS_235', 'BRATS_245', 'BRATS_250', 'BRATS_256', 'BRATS_257',
+       'BRATS_260', 'BRATS_269', 'BRATS_270', 'BRATS_271', 'BRATS_281',
+       'BRATS_282', 'BRATS_287', 'BRATS_289', 'BRATS_291', 'BRATS_292',
+       'BRATS_310', 'BRATS_314', 'BRATS_323', 'BRATS_327', 'BRATS_330',
+       'BRATS_333', 'BRATS_337', 'BRATS_346', 'BRATS_350', 'BRATS_352',
+       'BRATS_361', 'BRATS_382', 'BRATS_397'])
             if self.fold < len(splits):
                 tr_keys = splits[self.fold]['train']
                 val_keys = splits[self.fold]['val']

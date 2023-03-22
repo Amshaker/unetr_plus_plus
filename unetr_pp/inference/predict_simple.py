@@ -17,7 +17,7 @@ import argparse
 import torch
 
 from unetr_pp.inference.predict import predict_from_folder
-from unetr_pp.paths import default_plans_identifier, network_training_output_dir, default_cascade_trainer, default_trainer
+from unetr_pp.paths import default_plans_identifier, network_training_output_dir,  default_trainer
 from batchgenerators.utilities.file_and_folder_operations import join, isdir
 from unetr_pp.utilities.task_name_id_conversion import convert_id_to_task_name
 from unetr_pp.paths import network_training_output_dir, preprocessing_output_dir, default_plans_identifier
@@ -46,8 +46,8 @@ def main():
                         default=default_trainer)
     parser.add_argument('-ctr', '--cascade_trainer_class_name',
                         help="Trainer class name used for predicting the 3D full resolution U-Net part of the cascade."
-                             "Default is %s" % default_cascade_trainer, required=False,
-                        default=default_cascade_trainer)
+                             "Default is %s" % default_trainer, required=False,
+                        default=default_trainer)
 
     parser.add_argument('-m', '--model', help="2d, 3d_lowres, 3d_fullres or 3d_cascade_fullres. Default: 3d_fullres",
                         default="3d_fullres", required=False)

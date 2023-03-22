@@ -32,10 +32,12 @@ def process_label(label):
    
     return spleen,right_kidney,left_kidney,gallbladder,liver,stomach,aorta,pancreas
 
-def test(fold):
-    path=None #Task002_Synapse path
-    label_list=sorted(glob.glob(os.path.join(path,'labelsTs','*nii.gz')))
-    infer_list=sorted(glob.glob(os.path.join(path,'inferTs','nnformer_synapse','*nii.gz')))
+def test(fold): 
+    label_path= None # Replace None by full path of "DATASET/unetr_pp_raw/unetr_pp_raw_data/Task002_Synapse/"
+    infer_path = None # Replace None by full path of "output_synapse"  
+    
+    label_list=sorted(glob.glob(os.path.join(label_path,'labelsTs','*nii.gz')))
+    infer_list=sorted(glob.glob(os.path.join(infer_path,'inferTs','*nii.gz')))
     print("loading success...")
     print(label_list)
     print(infer_list)
@@ -57,7 +59,7 @@ def test(fold):
     hd_aorta=[]
     hd_pancreas=[]
     
-    file=path + 'inferTs/'+fold
+    file=infer_path + 'inferTs/'+fold
     if not os.path.exists(file):
         os.makedirs(file)
     fw = open(file+'/dice_pre.txt', 'a')
