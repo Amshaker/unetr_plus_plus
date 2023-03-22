@@ -44,9 +44,6 @@ Our spatial attention formulation is efficient having linear complexity with res
 ## Comparison with SOTA (BRaTs)
 ![results](images/Brats_quantitative_results.png)
 
-## Comparison with SOTA (Decathlon-Lung)
-![results](images/Lungs_quantitative_results.png)
-
 
 ## Qualitative Results (Synapse)
 
