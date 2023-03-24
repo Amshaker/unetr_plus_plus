@@ -147,7 +147,7 @@ Please refer to [Setting up the datasets](https://github.com/282857341/nnFormer)
 Alternatively, you can download the preprocessed dataset for [Synapse](https://drive.google.com/file/d/1V2y6HbBFsl4nkU47BUKUgJveQbx1kTKD), [ACDC](https://drive.google.com/file/d/1-4sO9vqYZx2zbOJVhCNV3qBLkeEIIK06), [Decathlon-Lung](https://drive.google.com/file/d/1KdEhz7hWjIQvmz5dCFwxlttpUFQJmCnz), [BRaTs](https://drive.google.com/file/d/1G_apEM7wwJhF2qiJ5biVQ6iHpuxCd3bL), and extract it under the project directory.
 
 ## Training
-The following scripts can be used for training our UNETR++ model on the five datasets,
+The following scripts can be used for training our UNETR++ model on the datasets:
 ```shell
 bash training_scripts/run_training_synapse.sh
 bash training_scripts/run_training_acdc.sh
