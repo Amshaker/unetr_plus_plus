@@ -144,7 +144,7 @@ The dataset folders for Synapse should be organized as follows:
  ```
  
 Please refer to [Setting up the datasets](https://github.com/282857341/nnFormer) on nnFormer repository for more details.
-Alternatively, you can download the preprocessed dataset for [Synapse](https://drive.google.com/file/d/1V2y6HbBFsl4nkU47BUKUgJveQbx1kTKD), [ACDC](https://drive.google.com/file/d/1-4sO9vqYZx2zbOJVhCNV3qBLkeEIIK06), [Decathlon-Lung](https://drive.google.com/file/d/1KdEhz7hWjIQvmz5dCFwxlttpUFQJmCnz), [BRaTs](https://drive.google.com/file/d/1G_apEM7wwJhF2qiJ5biVQ6iHpuxCd3bL), and extract it under the project directory.
+Alternatively, you can download the preprocessed dataset for [Synapse](https://mbzuaiac-my.sharepoint.com/:u:/g/personal/abdelrahman_youssief_mbzuai_ac_ae/EbHDhSjkQW5Ak9SMPnGCyb8BOID98wdg3uUvQ0eNvTZ8RA?e=YVhfdg), [ACDC](https://mbzuaiac-my.sharepoint.com/:u:/g/personal/abdelrahman_youssief_mbzuai_ac_ae/EY9qieTkT3JFrhCJQiwZXdsB1hJ4ebVAtNdBNOs2HAo3CQ?e=VwfFHC), [Decathlon-Lung](https://drive.google.com/file/d/1KdEhz7hWjIQvmz5dCFwxlttpUFQJmCnz), [BRaTs](https://mbzuaiac-my.sharepoint.com/:u:/g/personal/abdelrahman_youssief_mbzuai_ac_ae/EaQOxpD2yE5Btl-UEBAbQa0BYFBCL4J2Ph-VF_sqZlBPSQ?e=DFY41h), and extract it under the project directory.
 
 ## Training
 The following scripts can be used for training our UNETR++ model on the datasets:
