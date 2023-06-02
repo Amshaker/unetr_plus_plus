@@ -201,6 +201,8 @@ bash evaluation_scripts/run_evaluation_tumor.sh
 
 <hr />
 
+## Acknowledgement
+This repository is built based on [nnFormer](https://github.com/282857341/nnFormer) repository.
 
 ## Citation
 If you use our work, please consider citing:
@@ -214,4 +216,4 @@ If you use our work, please consider citing:
 ```
 
 ## Contact
-Should you have any question, please create an issue on this repository or contact at abdelrahman.youssief@mbzuai.ac.ae.
+Should you have any question, please create an issue on this repository or contact me at abdelrahman.youssief@mbzuai.ac.ae.
