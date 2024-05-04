@@ -17,3 +17,4 @@ nibabel==4.0.1
 timm==0.4.12
 monai==0.7.0
 einops==0.6.0
+tensorboardX==2.2
