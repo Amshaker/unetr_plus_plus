@@ -208,12 +208,13 @@ This repository is built based on [nnFormer](https://github.com/282857341/nnForm
 ## Citation
 If you use our work, please consider citing:
 ```bibtex
-    @article{Shaker2022UNETR++,
-      title={UNETR++: Delving into Efficient and Accurate 3D Medical Image Segmentation},
-      author={Shaker, Abdelrahman and Maaz, Muhammad and Rasheed, Hanoona and Khan, Salman and Yang, Ming-Hsuan and Khan, Fahad Shahbaz},
-      journal={arXiv:2212.04497},
-      year={2022},
-}
+@ARTICLE{10526382,
+  title={UNETR++: Delving into Efficient and Accurate 3D Medical Image Segmentation}, 
+  author={Shaker, Abdelrahman M. and Maaz, Muhammad and Rasheed, Hanoona and Khan, Salman and Yang, Ming-Hsuan and Khan, Fahad Shahbaz},
+  journal={IEEE Transactions on Medical Imaging}, 
+  year={2024},
+  doi={10.1109/TMI.2024.3398728}}
+
 ```
 
 ## Contact
