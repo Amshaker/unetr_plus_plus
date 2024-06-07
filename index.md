@@ -4,11 +4,16 @@
 
 <br>
 
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  [Paper](https://arxiv.org/abs/2212.04497): [<img height="25" src="/unetr_plus_plus/Paper.PNG" width="25" />](https://arxiv.org/abs/2212.04497)  , [Code:](https://github.com/Amshaker/unetr_plus_plus) [<img height="25" src="/unetr_plus_plus/Github.png" width="25" />](https://github.com/Amshaker/unetr_plus_plus)
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  [Paper](https://ieeexplore.ieee.org/document/10526382): [<img height="25" src="/unetr_plus_plus/Paper.PNG" width="25" />](https://ieeexplore.ieee.org/document/10526382)  , [Code:](https://github.com/Amshaker/unetr_plus_plus) [<img height="25" src="/unetr_plus_plus/Github.png" width="25" />](https://github.com/Amshaker/unetr_plus_plus)
 
 <br>
 
-
+## :rocket: News
+* **(May 04, 2024):** We're thrilled to share that UNETR++ has been accepted to IEEE TMI-2024! 🎊.
+* **(Jun 01, 2023):** UNETR++ code & weights are released for Decathlon-Lung and BRaTs.
+* **(Dec 15, 2022):** UNETR++ weights are released for Synapse & ACDC datasets.
+* **(Dec 09, 2022):** UNETR++ training and evaluation codes are released.
+  
 ## Overview
 <p align="center">
 <!-- ![results](images/madds_vs_top_1.png) -->
@@ -18,6 +23,7 @@
 We propose an efficient hybrid hierarchical architecture for 3D medical image segmentation, named UNETR++, that strives to achieve both better segmentation
 accuracy and efficiency in terms of parameters and FLOPs. Compared to best existing nnFormer, UNETR++ achieves better segmentation performance while significantly reduces the model complexity by over 71%.
 </p>
+
 ## Abstract
 
 
@@ -61,14 +67,17 @@ Our spatial attention formulation is efficient having linear complexity with res
 
 
 ## Citation
-```
-    @article{Shaker2022UNETR++,
-      title={UNETR++: Delving into Efficient and Accurate 3D Medical Image Segmentation},
-      author={Shaker, Abdelrahman and Maaz, Muhammad and Rasheed, Hanoona and Khan, Salman and Yang, Ming-Hsuan and Khan, Fahad Shahbaz},
-      journal={arXiv:2212.04497},
-      year={2022},
-}
+If you use our work, please consider citing:
+```bibtex
+@ARTICLE{10526382,
+  title={UNETR++: Delving into Efficient and Accurate 3D Medical Image Segmentation}, 
+  author={Shaker, Abdelrahman M. and Maaz, Muhammad and Rasheed, Hanoona and Khan, Salman and Yang, Ming-Hsuan and Khan, Fahad Shahbaz},
+  journal={IEEE Transactions on Medical Imaging}, 
+  year={2024},
+  doi={10.1109/TMI.2024.3398728}}
+
 ```
 
 ## Contact
-Should you have any question, please create an issue on our repository or contact us at [abdelrahman.youssief@mbzuai.ac.ae](abdelrahman.youssief@mbzuai.ac.ae) & [muhammad.maaz@mbzuai.ac.ae](muhammad.maaz@mbzuai.ac.ae)
+Should you have any question, please create an issue on this repository or contact me at abdelrahman.youssief@mbzuai.ac.ae.
+
