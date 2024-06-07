@@ -8,7 +8,7 @@
 
 <br>
 
-## :rocket: News
+## News
 * **(May 04, 2024):** We're thrilled to share that UNETR++ has been accepted to IEEE TMI-2024! 🎊.
 * **(Jun 01, 2023):** UNETR++ code & weights are released for Decathlon-Lung and BRaTs.
 * **(Dec 15, 2022):** UNETR++ weights are released for Synapse & ACDC datasets.
