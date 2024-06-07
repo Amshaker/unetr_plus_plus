@@ -4,8 +4,8 @@
 
 Mohamed Bin Zayed University of Artificial Intelligence<sup>1</sup>, University of California Merced<sup>2</sup>, Google Research<sup>3</sup>, Linkoping University<sup>4</sup>
 
+[![paper](https://img.shields.io/badge/Paper-<COLOR>.svg)](https://ieeexplore.ieee.org/document/10526382)
 [![Website](https://img.shields.io/badge/Project-Website-87CEEB)](https://amshaker.github.io/unetr_plus_plus/)
-[![paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2212.04497)
 [![slides](https://img.shields.io/badge/Presentation-Slides-B762C1)](https://docs.google.com/presentation/d/e/2PACX-1vRtrxSfA2kU1fBmPxBdMQioLfsvjcjWBoaOVf3aupqajm0mw_C4TEz05Yk4ZF_vqoMyA8iiUJE60ynm/pub?start=true&loop=false&delayms=10000)
 
 
