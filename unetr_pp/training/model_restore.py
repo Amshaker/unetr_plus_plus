@@ -112,7 +112,7 @@ def restore_model(pkl_file, checkpoint=None, train=False, fp16=None,folder=None)
 def load_best_model_for_inference(folder):
     checkpoint = join(folder, "model_best.model")
     pkl_file = checkpoint + ".pkl"
-    return restore_model(pkl_file, checkpoint, False)
+    return restore_model(pkl_file, checkpoint, False, folder=folder)
 
 
 def load_model_and_checkpoint_files(folder, folds=None, mixed_precision=None, checkpoint_name="model_best"):
