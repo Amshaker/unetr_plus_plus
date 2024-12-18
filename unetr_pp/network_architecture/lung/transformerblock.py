@@ -49,7 +49,8 @@ class TransformerBlock(nn.Module):
 
         self.pos_embed = None
         if pos_embed:
-            #print("input size", input_size)
+            print("input size", input_size)
+            print("hidden size", hidden_size)
             self.pos_embed = nn.Parameter(torch.zeros(1, input_size, hidden_size))
 
     def forward(self, x):
@@ -58,8 +59,9 @@ class TransformerBlock(nn.Module):
         x = x.reshape(B, C, H * W * D).permute(0, 2, 1)
 
         if self.pos_embed is not None:
-            #print ("x",x.shape)
-            #print("pos_embed",self.pos_embed.shape)
+            print ("x",x.shape)
+            print("pos_embed",self.pos_embed.shape)
+
             x = x + self.pos_embed
         attn = x + self.gamma * self.epa_block(self.norm(x))
 
