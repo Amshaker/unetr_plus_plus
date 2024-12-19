@@ -1,5 +1,6 @@
+import torch
 from torch import nn
-from timm.models.layers import trunc_normal_
+from timm.layers import trunc_normal_
 from typing import Sequence, Tuple, Union
 from monai.networks.layers.utils import get_norm_layer
 from monai.utils import optional_import
@@ -13,9 +14,18 @@ einops, _ = optional_import("einops")
 #input_size=[28 * 24 * 20, 14 * 12 * 10, 7 * 6 * 5, ],dims=[32, 64, 128, 256]
 
 class UnetrPPEncoder(nn.Module):
-    def __init__(self, input_size=[32*48*48, 16 * 24 * 24, 8 * 12 * 12, 4*6*6],dims=[32, 64, 128, 256],
-                 proj_size =[64,64,64,32], depths=[3, 3, 3, 3],  num_heads=4, spatial_dims=3, in_channels=1,
-                 dropout=0.0, transformer_dropout_rate=0.1 ,**kwargs):
+    def __init__(self, 
+                #  input_size=[32*48*48, 16 * 24 * 24, 8 * 12 * 12, 4*6*6],
+                #  input_size=[64*16*16, 32*8*8, 16*4*4, 8*2*2],
+                 input_size=[16*32*32, 8*16*16, 4*8*8, 2*4*4],
+                 dims=[32, 64, 128, 256],
+                 proj_size =[64,64,64,32],
+                 depths=[3, 3, 3, 3],
+                 num_heads=4,
+                 spatial_dims=3,
+                 in_channels=1,
+                 dropout=0.0,
+                 transformer_dropout_rate=0.1, **kwargs):
         super().__init__()
 
         self.downsample_layers = nn.ModuleList()  # stem and 3 intermediate downsampling conv layers
@@ -146,6 +156,9 @@ class UnetrUpBlock(nn.Module):
     def forward(self, inp, skip):
 
         out = self.transp_conv(inp)
+        print("OUT SHAPE", out.shape)
+        print("SKIP SHAPE", skip.shape)
+        # skip = torch.reshape(skip, out.shape)
         out = out + skip
         out = self.decoder_block[0](out)
 

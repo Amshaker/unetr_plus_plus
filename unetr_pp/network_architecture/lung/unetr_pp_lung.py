@@ -20,8 +20,8 @@ class UNETR_PP(SegmentationNetwork):
             pos_embed: str = "perceptron",
             norm_name: Union[Tuple, str] = "instance",
             dropout_rate: float = 0.0,
-            depths=None,
-            dims=None,
+            depths=[3, 3, 3, 3],
+            dims=[32, 64, 128, 256],
             conv_op=nn.Conv3d,
             do_ds=True,
 
@@ -55,7 +55,8 @@ class UNETR_PP(SegmentationNetwork):
         if pos_embed not in ["conv", "perceptron"]:
             raise KeyError(f"Position embedding layer of type {pos_embed} is not supported.")
 
-        self.feat_size = (4, 6, 6,)
+        # self.feat_size = (4, 6, 6,)
+        self.feat_size = (2, 4, 4,)
         self.hidden_size = hidden_size
 
         self.unetr_pp_encoder = UnetrPPEncoder(dims=dims, depths=depths, num_heads=num_heads)
