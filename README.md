@@ -10,6 +10,7 @@ Mohamed Bin Zayed University of Artificial Intelligence<sup>1</sup>, University 
 
 
 ## :rocket: News
+* **(Dec 2025):** UNETR++ is now available in Keras 3 with a simple model initialization as part of [AI Toolkit for Healthcare Imaging](https://github.com/innat/medic-ai/tree/main/medicai/models/unetr_plus_plus)!
 * **(Oct 2025):** UNETR++ became the **#1 most popular article** of 2025 in [IEEE Transactions on Medical Imaging (TMI)](https://ieeexplore.ieee.org/xpl/topAccessedArticles.jsp?punumber=42)! 🎉
 * **(May 04, 2024):** We're thrilled to share that UNETR++ has been accepted to IEEE TMI-2024! 🎊
 * **(Jun 01, 2023):** UNETR++ code & weights are released for Decathlon-Lung and BRaTs.
@@ -19,8 +20,8 @@ Mohamed Bin Zayed University of Artificial Intelligence<sup>1</sup>, University 
 <hr />
 
 ![main figure](media/intro_fig.png)
-> **Abstract:** *Owing to the success of transformer models, recent works study their applicability in 3D medical segmentation tasks. Within the transformer models, the self-attention mechanism is one of the main building blocks that strives to capture long-range dependencies. However, the self-attention operation has quadratic complexity which proves to be a computational bottleneck, especially in volumetric medical imaging, where the inputs are 3D with numerous slices.  In this paper, we propose a 3D medical image segmentation approach, named UNETR++, that offers both high-quality segmentation masks as well as efficiency in terms of parameters, compute cost, and inference speed. The core of our design is the introduction of a novel efficient paired attention (EPA) block that efficiently learns spatial and channel-wise discriminative features using a pair of inter-dependent branches based on spatial and channel attention.
-Our spatial attention formulation is efficient having linear complexity with respect to the input sequence length. To enable communication between spatial and channel-focused branches, we share the weights of query and key mapping functions that provide a complimentary benefit (paired attention), while also reducing the overall network parameters. Our extensive evaluations on five benchmarks, Synapse, BTCV, ACDC, BRaTs, and Decathlon-Lung, reveal the effectiveness of our contributions in terms of both efficiency and accuracy. On Synapse, our UNETR++ sets a new state-of-the-art with a Dice Score of 87.2%, while being significantly efficient with a reduction of over 71% in terms of both parameters and FLOPs, compared to the best method in the literature.* 
+> **Abstract:** *Owing to the success of transformer models, recent works study their applicability in 3D medical segmentation tasks. Within the transformer models, the self-attention mechanism is one of the main building blocks that strives to capture long-range dependencies. However, the self-attention operation has quadratic complexity, which proves to be a computational bottleneck, especially in volumetric medical imaging, where the inputs are 3D with numerous slices.  In this paper, we propose a 3D medical image segmentation approach, named UNETR++, that offers both high-quality segmentation masks as well as efficiency in terms of parameters, compute cost, and inference speed. The core of our design is the introduction of a novel efficient paired attention (EPA) block that efficiently learns spatial and channel-wise discriminative features using a pair of inter-dependent branches based on spatial and channel attention.
+Our spatial attention formulation is efficient, having linear complexity with respect to the input sequence length. To enable communication between spatial and channel-focused branches, we share the weights of query and key mapping functions that provide a complementary benefit (paired attention), while also reducing the overall network parameters. Our extensive evaluations on five benchmarks, Synapse, BTCV, ACDC, BRaTs, and Decathlon-Lung, reveal the effectiveness of our contributions in terms of both efficiency and accuracy. On Synapse, our UNETR++ sets a new state-of-the-art with a Dice Score of 87.2%, while being significantly efficient with a reduction of over 71% in terms of both parameters and FLOPs, compared to the best method in the literature.* 
 <hr />
 
 
@@ -35,7 +36,7 @@ Overview of our UNETR++ approach with hierarchical encoder-decoder structure. Th
 
 ### Synapse Dataset
 State-of-the-art comparison on the abdominal multi-organ Synapse dataset. We report both the segmentation performance (DSC, HD95) and model complexity (parameters and FLOPs).
-Our proposed UNETR++ achieves favorable segmentation performance against existing methods, while being considerably reducing the model complexity. Best results are in bold. 
+Our proposed UNETR++ achieves favorable segmentation performance against existing methods, while considerably reducing the model complexity. Best results are in bold. 
 Abbreviations stand for: Spl: _spleen_, RKid: _right kidney_, LKid: _left kidney_, Gal: _gallbladder_, Liv: _liver_, Sto: _stomach_, Aor: _aorta_, Pan: _pancreas_. 
 Best results are in bold.
 
